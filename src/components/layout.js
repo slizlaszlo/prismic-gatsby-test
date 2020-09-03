@@ -1,45 +1,111 @@
-/**
- * Layout component that queries for data
- * with Gatsby's useStaticQuery component
- *
- * See: https://www.gatsbyjs.org/docs/use-static-query/
- */
+
 
 import React from "react"
 import PropTypes from "prop-types"
-import { useStaticQuery, graphql } from "gatsby"
+import { StaticQuery, graphql, Link } from "gatsby"
+import styled from 'styled-components';
 
-import Header from "./header"
 import "./layout.css"
 
-const Layout = ({ children }) => {
-  const data = useStaticQuery(graphql`
-    query SiteTitleQuery {
-      site {
-        siteMetadata {
-          title
+const Main = styled.main`
+  max-width: 960px;
+  margin: 0 auto;
+`;
+
+const navigationQuery = graphql`
+{
+  prismic {
+    allNavigations {
+      edges {
+        node {
+          navigation_links {
+            label
+            link {
+              ... on PRISMIC_Page {
+                _meta {
+                  uid
+                }
+              }
+            }
+          }
         }
       }
     }
-  `)
+    allSubNavigations {
+      edges {
+        node {
+          parent
+          sub_navigation {
+            label
+            parent
+            link {
+              ... on PRISMIC_SubPage {
+                _meta {
+                  uid
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+`;
+
+const NavLink = styled.div``;
+
+const Layout = ({ children }) => {
 
   return (
     <>
-      <Header siteTitle={data.site.siteMetadata.title} />
-      <div
-        style={{
-          margin: `0 auto`,
-          maxWidth: 960,
-          padding: `0 1.0875rem 1.45rem`,
+      <StaticQuery
+        query={navigationQuery}
+        render={(data) => {
+          console.log(data);
+          return data.prismic.allNavigations.edges[0].node.navigation_links.map((link) => {
+
+            console.log(link.label);
+            // check sub nav here
+            const subNav = data.prismic.allSubNavigations.edges.find(edge => {
+              return edge.node.parent === link.label;
+            });
+            console.log(subNav);
+
+            if (subNav) {
+              return (
+                <NavLink key={link.link._meta.uid}>
+                  <Link to={`/${link.link._meta.uid}`}>
+                    {link.label}
+                  </Link>
+                  <div>
+                    {
+                      subNav.node.sub_navigation.map(subLink => {
+                        return (
+                          <NavLink key={subLink.link._meta.uid}>
+                            <Link to={`/${link.link._meta.uid}/${subLink.link._meta.uid}`}>{subLink.label}</Link>
+                          </NavLink>
+                        )
+                      })
+                    }
+                  </div>
+                </NavLink>
+              );
+            }
+
+            return (
+              <NavLink key={link.link._meta.uid}>
+                <Link to={`/${link.link._meta.uid}`}>
+                  {link.label}
+                </Link>
+              </NavLink>
+            );
+          })
         }}
-      >
-        <main>{children}</main>
-        <footer>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.org">Gatsby</a>
-        </footer>
-      </div>
+      />
+      <Main>{children}</Main>
+
     </>
   )
 }
