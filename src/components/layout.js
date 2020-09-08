@@ -61,17 +61,17 @@ const Layout = ({ children }) => {
   return (
     <>
       <StaticQuery
-        query={navigationQuery}
+        query={`${navigationQuery}`}
         render={(data) => {
-          console.log(data);
+          // console.log(data);
           return data.prismic.allNavigations.edges[0].node.navigation_links.map((link) => {
 
-            console.log(link.label);
+            // console.log(link.label);
             // check sub nav here
             const subNav = data.prismic.allSubNavigations.edges.find(edge => {
               return edge.node.parent === link.label;
             });
-            console.log(subNav);
+            // console.log(subNav);
 
             if (subNav) {
               return (
