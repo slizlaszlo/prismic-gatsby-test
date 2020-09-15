@@ -75,7 +75,6 @@ const ContactUs = ({ data }) => {
           method="POST"
           data-netlify="true"
           action="/contact-success"
-          onSubmit={e => e.preventDefault()}
         >
           {/* This needed for Netlify  */}
           <input type="hidden" name="form-name" value="contact-us" />
