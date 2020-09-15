@@ -88,6 +88,7 @@ const ContactUs = ({ data }) => {
                       <label>
                         {field.field_name}
                         <input
+                          name={field.field_name}
                           type={field.field_type}
                           required={field.required === 'true'}
                           placeholder={field.field_name}
@@ -101,6 +102,7 @@ const ContactUs = ({ data }) => {
                       <label>
                         {field.field_name}
                         <textarea
+                          name={field.field_name}
                           required={field.required === 'true'}
                           placeholder={field.field_name}
                         />
