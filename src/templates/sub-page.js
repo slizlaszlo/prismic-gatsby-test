@@ -1,8 +1,8 @@
 import React from 'react';
 import { graphql } from 'gatsby';
-import { RichText } from 'prismic-reactjs';
 
 import Layout from '../components/layout';
+import RichTextCustom from '../components/richText';
 
 export const query = graphql`
 query SubPageQuery($id: String) {
@@ -31,8 +31,8 @@ const SubPage = (props) => {
 
   return (
     <Layout>
-      <RichText render={pageTitle} />
-      <RichText render={content} />
+      <RichTextCustom render={pageTitle} />
+      <RichTextCustom render={content} />
     </Layout>
   )
 }
